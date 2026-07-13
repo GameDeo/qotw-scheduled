@@ -57,5 +57,5 @@ jobs:
           git add qotw/*.pdf
           git commit -m "Auto-captured QOTW PDF for $(date +'%Y-%m-%d')" || echo "No new PDFs to commit"
           
-          # Push the PDF directly to the main branch
-          git push
+          # Push the PDF explicitly to the main branch (fixes detached HEAD issues)
+          git push origin HEAD:main
