@@ -1,0 +1,38 @@
+name: QOTW Scraper
+
+on:
+  schedule:
+    # 8:00 AM PDT is 15:00 UTC. Runs every Monday (1)
+    - cron: '0 15 * * 1'
+  workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright pillow img2pdf
+          playwright install chromium --with-deps
+          
+      - name: Run Scraper
+        run: |
+          python qotw_scraper_headless.py
+          
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: qotw-pdf
+          path: qotw/*.pdf
+          retention-days: 90
