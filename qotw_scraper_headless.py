@@ -4,7 +4,7 @@ from datetime import datetime
 from PIL import Image
 import img2pdf
 from playwright.sync_api import sync_playwright
-
+import re
 def find_page_bounds(image_path):
     try:
         img = Image.open(image_path)
@@ -66,7 +66,8 @@ def main():
         page = context.new_page()
         page.goto("https://usachemcamp.com/question-of-the-week", wait_until="networkidle")
         
-        button = page.locator('a:has-text("QOW_12JULY_PROBLEMS")').first
+        # Use regex to find any link matching QOW_..._PROBLEMS dynamically
+        button = page.locator('a', has_text=re.compile(r"QO(?:T)?W_.*_PROBLEMS", re.IGNORECASE)).first
         button.wait_for(state="visible", timeout=10000)
         
         doc_url = button.get_attribute("href")
