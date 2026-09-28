@@ -38,8 +38,7 @@ jobs:
       - name: Install Playwright OS Dependencies
         run: playwright install-deps chromium
         
-      - name: Download Playwright Chromium (if not cached)
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Ensure Playwright Chromium is installed
         run: playwright install chromium
           
       - name: Run Scraper
